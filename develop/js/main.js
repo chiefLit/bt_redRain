@@ -28,59 +28,75 @@ $(function () {
         // 创建画布
         var canvas = util.createCanvas(this.WIDTH, this.HEIGHT, "canvas", $('body'))[0];
         this.ctx = canvas.getContext('2d');
-        //背景图片 红包图片
+        // 背景图片 红包图片
         this.image_bg = options.image_bg;
         this.imgage_rd = options.imgage_rd;
         this.rd_width = options.rd_width;
         this.rd_height = options.rd_height;
-        //几率
+        // 几率
         this.odds = options.odds;
-        //红包列表
+        // 红包列表
         this.rds = [];
+        // 记录当前时间红包降落点 防止红包重叠
+        this.initDir = null;
     }
 
     RedRain.prototype = {
         //初始化画布
         init: function() {
             var _this = this;
-            _this.setBg();
+            // _this.setBg();
+            this.ctx.fillStyle = 'rgba(255, 255, 255, 0)';
+            _this.startGame();
+                // _this.startGame();
         },
 
-        //设置背景
-        setBg: function(){
-            var _this = this;
-            var img = new Image();
-            img.src = _this.image_bg;
-            img.onload = function() {
-                _this.ctx.drawImage(img, 0, 0, _this.WIDTH, _this.HEIGHT);
-                _this.startGame();
-            };
+        // 随机下落地址
+        randomAddr: function(oImg){
+            var x = util.random(0, this.WIDTH - oImg.width);
+            if (Math.abs(x - this.initDir) < oImg.width/2) {
+                this.randomAddr(oImg);
+            } else {
+                this.initDir = x;
+                return x
+            }
         },
 
         //创建红包
         createRed: function() {
             var _this = this;
             var img = new Image();
+            // 随机图片
             var oImg = _this.imgage_rd[util.random(0,_this.imgage_rd.length - 1)];
             img.src = oImg.url;
-            var dir = 0;
-            var x = util.random(10, _this.WIDTH - oImg.width - 10);
+            // 下降总距离
+            var y = 0;
+            // 随机下落点
+            var x = _this.randomAddr(oImg);
+
+            var ops = {
+                img: img,
+                x: _this.randomAddr(oImg),
+                y: 0,
+                ox: oImg.width,
+                oy: oImg.height
+            };
+            // 单位时间下降距离
+            var unitDir = 3;
             img.onload = function() {
                 var ctx = _this.ctx;
-                // ctx.drawImage(img, x, 0, oImg.width, oImg.height);
                 var downTimer = setInterval(function(){
-                    ctx.clearRect(x,0, oImg.width, oImg.height);//清除上一次的痕迹
+                    ctx.clearRect(x, y-unitDir, oImg.width, oImg.height);//清除上一次的痕迹
                     ctx.beginPath();
-                    ctx.drawImage(img, x, dir, oImg.width, oImg.height);
+                    ctx.drawImage(img, x, y, oImg.width, oImg.height);
                     ctx.closePath();
                     // ctx.fill();
-                    if (dir > _this.HEIGHT) {
+                    if (y > _this.HEIGHT) {
                         clearInterval(downTimer);
                     } else {
-                        dir += 10
+                        y += unitDir
                     }
-                }, 70)
-                // ctx.rotate(20*Math.PI/180);
+                }, 1)
             };
         },
 
