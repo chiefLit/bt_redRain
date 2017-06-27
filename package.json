@@ -1,0 +1,10 @@
+{
+  "name": "red-rain",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "sync": "browser-sync start --server \"develop\" --baseDir --directory true --files \"develop/**/*\" --open \"external\" --port 8800"
+  },
+  "author": "liting"
+}
