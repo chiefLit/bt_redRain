@@ -45,10 +45,43 @@ $(function () {
         //初始化画布
         init: function() {
             var _this = this;
-            // _this.setBg();
+            // 透明背景
             this.ctx.fillStyle = 'rgba(255, 255, 255, 0)';
-            _this.startGame();
-                // _this.startGame();
+            _this.countDown();
+        },
+
+        // 倒计时开始
+        countDown: function(){
+            var _this = this;
+            var time_meter = 3;
+            var countInterval = setInterval(function(){
+                if (time_meter < 1) {
+                    clearInterval(countInterval);
+                    $('body>div.count').remove();
+                    // 开始
+                    _this.startGame();
+                    return
+                }
+                var div = $('<div class="count">' + time_meter + '</div>');
+                div.css({
+                    display: "inline",
+                    width: $(window).width(),
+                    height: $(window).height(),
+                    position: "fixed",
+                    zIndex: 99999,
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    background: "rgba(255,255,255,0.5)",
+                    lineHeight: $(window).height() + 'px',
+                    textAlign: 'center',
+                    fontSize: '80px'
+                });
+                $('body>div.count').remove();
+                util.appendChildDom(div, $('body'));
+                time_meter--;
+            }, 1000)
         },
 
         // 随机下落地址
@@ -62,25 +95,17 @@ $(function () {
             }
         },
 
-        //创建红包
+        // 创建红包
         createRed: function() {
             var _this = this;
             var img = new Image();
             // 随机图片
             var oImg = _this.imgage_rd[util.random(0,_this.imgage_rd.length - 1)];
             img.src = oImg.url;
-            // 下降总距离
-            var y = 0;
             // 随机下落点
             var x = _this.randomAddr(oImg);
-
-            var ops = {
-                img: img,
-                x: _this.randomAddr(oImg),
-                y: 0,
-                ox: oImg.width,
-                oy: oImg.height
-            };
+            // 下降总距离
+            var y = 0;
             // 单位时间下降距离
             var unitDir = 3;
             img.onload = function() {
@@ -90,7 +115,6 @@ $(function () {
                     ctx.beginPath();
                     ctx.drawImage(img, x, y, oImg.width, oImg.height);
                     ctx.closePath();
-                    // ctx.fill();
                     if (y > _this.HEIGHT) {
                         clearInterval(downTimer);
                     } else {
@@ -117,13 +141,9 @@ $(function () {
             }, 100);
         },
 
-        // 动画
-        animate: function(){
-        },
-
         //结束游戏
         endGame: function() {
-
+            console.log("游戏结束")
         },
     }
 
@@ -167,5 +187,6 @@ $(function () {
 
     window.RedRain = RedRain;
     var rr = new RedRain("canvas", options);
+
     rr.init();
 });
