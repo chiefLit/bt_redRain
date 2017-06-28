@@ -3,7 +3,6 @@ $(function () {
         //向已知dom后添加新元素
         appendChildDom: function (domChild, domParent) {
             domParent.append(domChild);
-
         },
         //创建空的canvas
         createCanvas: function (width, height, id, parentDOM) {
@@ -26,19 +25,28 @@ $(function () {
         this.WIDTH = options.WIDTH || $(window).width();
         this.HEIGHT = options.HEIGHT || $(window).height();
         // 创建画布
-        var canvas = util.createCanvas(this.WIDTH, this.HEIGHT, "canvas", $('body'))[0];
-        this.ctx = canvas.getContext('2d');
+        this.canvas = util.createCanvas(this.WIDTH, this.HEIGHT, "canvas", $('body'))[0];
+        this.ctx = this.canvas.getContext('2d');
         // 背景图片 红包图片
         this.image_bg = options.image_bg;
         this.imgage_rd = options.imgage_rd;
-        this.rd_width = options.rd_width;
-        this.rd_height = options.rd_height;
+        // 点击红包的音效列表
+        this.sounds = options.sounds;
         // 几率
         this.odds = options.odds;
         // 红包列表
         this.rds = [];
         // 记录当前时间红包降落点 防止红包重叠
         this.initDir = null;
+        // 单位时间下降距离(速度) 变化速度
+        this.v = options.v;
+        this.dv = options.dv;
+        // 已获取红包个数
+        this.rdSum = 0;
+        // 结束的回掉函数
+        this.overCallback = options.overCallback;
+        // 活动开关（控制红包）
+        this.isStarting = false;
     }
 
     RedRain.prototype = {
@@ -47,10 +55,143 @@ $(function () {
             var _this = this;
             // 透明背景
             this.ctx.fillStyle = 'rgba(255, 255, 255, 0)';
-            _this.countDown();
+            // _this.countDown();
+            _this.startGame();
+            _this.getRed();
         },
 
-        // 倒计时开始
+        // 开始游戏
+        startGame: function(){
+            var _this = this;
+            var sum = 0;
+            var remaintTime = 0;
+            var startV = _this.v;
+            _this.isStarting = true;
+            var timer = setInterval(function(){
+                var nNandom = Math.random();
+                remaintTime = 10 - Math.floor(sum/10);
+                // 赋红包个数值
+                $(".remaint-time span").html(remaintTime);
+                sum ++;
+                // 速度变化
+                _this.v = (50 - Math.abs(50 - sum)) * _this.dv / 50 + startV;
+                if (nNandom < _this.odds) {
+                    _this.createRed();
+                }
+                if (sum >= 100) {
+                    clearInterval(timer);
+
+	                // 赋红包个数值
+	                $(".remaint-time span").html(0);
+                    _this.endGame()
+                }
+            }, 100);
+            _this.animate()
+        },
+
+        // 创建红包
+        createRed: function() {
+            var _this = this;
+            var img = new Image();
+            // 随机图片
+            var oImg = _this.imgage_rd[util.random(0,_this.imgage_rd.length - 1)];
+            img.src = oImg.url;
+            // 随机下落点
+            var x = _this.randomAddr(oImg);
+            // 下降总距离
+            var y = -oImg.height;
+
+            var rdItem = [img, x, y, oImg.width, oImg.height];
+            img.onload = function() {
+                _this.rds.push(rdItem);
+            };
+        },
+
+        // 随机下落地址
+        randomAddr: function(oImg){
+            var x = util.random(0, this.WIDTH - oImg.width);
+            if (Math.abs(x - this.initDir) < oImg.width) {
+                this.randomAddr(oImg);
+            } else {
+                this.initDir = x;
+                return x
+            }
+        },
+
+        // 下落动画
+        animate: function(){
+            var _this = this;
+            var ctx = this.ctx;
+            var downTimer;
+            downTimer = setInterval(function(){
+                ctx.clearRect(0, 0, _this.WIDTH, _this.HEIGHT);//清除整屏
+                _this.rds.forEach(function(item, index){
+                    var rd = item;
+                    // ctx.clearRect(rd[1], rd[2] - _this.v, rd[3], rd[4]);//清除上一次的痕迹
+                    // ctx.beginPath();
+                    ctx.drawImage(rd[0], rd[1], rd[2], rd[3], rd[4]);
+                    // ctx.closePath();
+                    
+                    if (rd[2] > _this.HEIGHT) {
+                        //清除红包
+                        _this.rds.splice(index, 1);
+                    } else {
+                        rd[2] += _this.v
+                    }
+                })
+            }, 1)
+        },
+
+        // 中奖效果
+        getEffect: function(item){
+        	console.log(item);
+        },
+
+        // 点击获取红包
+        getRed: function(){
+            var _this = this;
+            if (!_this.isStarting) {
+            	true
+            }
+            $(_this.canvas).on("touchstart", function(e){
+                var touch = e.originalEvent.targetTouches[0]; 
+                var cx = touch.clientX;
+                var cy = touch.clientY;
+                _this.rds.forEach(function(item, index){
+                    if (cx > item[1] && cx < item[1] + item[3]) {
+                        if (cy > item[2] && cy < item[2] + item[4]) {
+                        	_this.getEffect(item);
+                            _this.rds.splice(index, 1);
+                            _this.rdSum++;
+			                $(".red-sum span").html(_this.rdSum);
+                            return;
+                        }
+                    }
+                })
+            })
+        },
+        
+
+        // 音效生成
+        setAudio: function(index){
+            var audio = $('<audio></audio>');
+
+
+            if (index != null) {
+                return this.sounds[index]
+            } else {
+                return this.sounds[util.random(0, this.sounds.length - 1)]
+            }
+        },
+
+        //结束游戏
+        endGame: function() {
+        	var _this = this;
+            _this.isStart = false;
+            _this.overCallback(_this.rdSum)
+        },
+
+        // 游戏开始倒计时
         countDown: function(){
             var _this = this;
             var time_meter = 3;
@@ -82,68 +223,6 @@ $(function () {
                 util.appendChildDom(div, $('body'));
                 time_meter--;
             }, 1000)
-        },
-
-        // 随机下落地址
-        randomAddr: function(oImg){
-            var x = util.random(0, this.WIDTH - oImg.width);
-            if (Math.abs(x - this.initDir) < oImg.width/2) {
-                this.randomAddr(oImg);
-            } else {
-                this.initDir = x;
-                return x
-            }
-        },
-
-        // 创建红包
-        createRed: function() {
-            var _this = this;
-            var img = new Image();
-            // 随机图片
-            var oImg = _this.imgage_rd[util.random(0,_this.imgage_rd.length - 1)];
-            img.src = oImg.url;
-            // 随机下落点
-            var x = _this.randomAddr(oImg);
-            // 下降总距离
-            var y = 0;
-            // 单位时间下降距离
-            var unitDir = 3;
-            img.onload = function() {
-                var ctx = _this.ctx;
-                var downTimer = setInterval(function(){
-                    ctx.clearRect(x, y-unitDir, oImg.width, oImg.height);//清除上一次的痕迹
-                    ctx.beginPath();
-                    ctx.drawImage(img, x, y, oImg.width, oImg.height);
-                    ctx.closePath();
-                    if (y > _this.HEIGHT) {
-                        clearInterval(downTimer);
-                    } else {
-                        y += unitDir
-                    }
-                }, 1)
-            };
-        },
-
-        //开始游戏
-        startGame: function(){
-            var _this = this;
-            var sum = 0;
-            var timer = setInterval(function(){
-                var nNandom = Math.random();
-                sum ++;
-                if (nNandom < _this.odds) {
-                    _this.createRed();
-                }
-                if (sum >= 100) {
-                    clearInterval(timer);
-                    _this.endGame()
-                }
-            }, 100);
-        },
-
-        //结束游戏
-        endGame: function() {
-            console.log("游戏结束")
         },
     }
 
@@ -178,10 +257,16 @@ $(function () {
             width: 92,
             height: 71
         }],
-        rd_width: 50,
-        rd_height: 50,
-        //单个红包出现记录
-        odds: 0.6
+        //点击音效
+        sounds: ['mp3/hb.mp3','mp3/jy.mp3'],
+        //单个红包出现几率
+        odds: 1,
+        overCallback: function(sum){
+        	console.log("游戏结束,你中了" + sum)
+        },
+        // 速度+速度差=最高速度
+        v: 3,
+        dv: 2
     } 
 
 

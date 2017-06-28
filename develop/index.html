@@ -22,9 +22,44 @@
             background-size: cover;
             background-position: center;
         }
+        .remaint-time {
+            position: absolute;
+            z-index: 1;
+            top: 10px;
+            left: 10px;
+            width: 92px;
+            height: 31px;
+            background: url("img/redpacket_time@2x.png") no-repeat;
+            -webkit-background-size: 92px auto;
+            background-size: 92px auto;
+        }
+        .remaint-time span,.red-sum span  {
+            line-height: 31px;
+            float: right;
+            width: 70px;
+            text-align: center;
+        }
+        .red-sum {
+            position: absolute;
+            z-index: 1;
+            top: 10px;
+            right: 10px;
+            width: 92px;
+            height: 31px;
+            background: url("img/redpacket_number@2x.png") no-repeat;
+            -webkit-background-size: 92px auto;
+            background-size: 92px auto;
+        }
     </style>
 </head>
 
-<body></body>
+<body>
+    <div class="remaint-time">
+        <span>10</span>
+    </div>
+    <div class="red-sum">
+        <span>0</span>
+    </div>
+</body>
 
 </html>
