@@ -21,6 +21,37 @@ $(function () {
 	        clearTimeout(id);
 	    };
 	}());
+
+	var cEvent = "touchstart"; //默认是手机->touchstart,PC->click
+	function browserRedirect() {
+	    var sUserAgent = navigator.userAgent.toLowerCase();
+	    var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+	    var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+	    var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+	    var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+	    var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+	    var bIsAndroid = sUserAgent.match(/android/i) == "android";
+	    var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+	    var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
+	    if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
+	        // document.writeln("phone");
+	        cEvent = "touchstart";
+	    } else {
+	        // document.writeln("pc");
+	        cEvent = "click";
+	    }
+	}
+	browserRedirect();
+
+    (function forbidOverMove() {
+        window.ontouchmove = function(e) {
+            e.preventDefault && e.preventDefault();
+            e.returnValue = false;
+            e.stopPropagation && e.stopPropagation();
+            return false;
+        }
+    })();
+
     var util = {
         //向已知dom后添加新元素
         appendChildDom: function (domChild, domParent) {
@@ -42,6 +73,7 @@ $(function () {
             return Math.floor(Math.random() * (end - start + 1)) + start;
         }
     };
+
     var RedRain = function (name, options, callback) {
         this.WIDTH = options.WIDTH || $(window).width();
         this.HEIGHT = options.HEIGHT || $(window).height();
@@ -80,8 +112,48 @@ $(function () {
             var _this = this;
             // _this.countDown();
             _this.startGame();
-            _this.getRed();
             _this.setAudio();
+            _this.setImage();
+        },
+
+        // 音效生成
+        setAudio: function(){
+    		var obj = {};
+    		var isLoading = false;
+        	$(this.sounds).each(function(index, item) {
+        		var audio = $('<audio></audio>');
+        		audio.attr({
+        			id: 'audio' + index,
+        			src: item,
+        			preload: "auto"
+        		})
+        		// audio.src = item;
+        		util.appendChildDom(audio, $('body'));
+        		$('body').on(cEvent, function(){
+        			if (isLoading) {
+        				return
+        			}
+        			isLoading = true;
+        			audio[0].play();
+                	audio[0].pause();
+        		})
+        	})
+        },
+
+        // 图片生成
+        setImage: function(){
+            var _this = this;
+    		var obj = {};
+        	$(_this.imgage_rd).each(function(index, item) {
+	            var img = new Image();
+        		$(img).attr({
+        			id: 'img' + index,
+        			src: item.url,
+        		});
+        		$(img).hide();
+        		util.appendChildDom(img, $('body'));
+        		img.onload = function(){};
+        	})
         },
 
         // 游戏开始倒计时
@@ -124,7 +196,6 @@ $(function () {
             var sum = 0;
             var remaintTime = 0;
             var startV = _this.v;
-            _this.isStarting = true;
             var timer = setInterval(function(){
                 var nNandom = Math.random();
                 sum ++;
@@ -137,16 +208,17 @@ $(function () {
                     clearInterval(timer);
                 }
             }, 100);
-            _this.drawCanvas()
+            _this.isStarting = true;
+            _this.drawCanvas();
+            _this.getRed();
         },
 
-        // 创建红包
+        // 添加红包
         createRed: function() {
             var _this = this;
-            var img = new Image();
+            var nIndex = util.random(0,_this.imgage_rd.length - 1);
             // 随机图片
-            var oImg = _this.imgage_rd[util.random(0,_this.imgage_rd.length - 1)];
-            img.src = oImg.url;
+            var oImg = _this.imgage_rd[nIndex];
             // 随机下落点
 	        function randomAddr(oImg){
 	            var x = util.random(0, _this.WIDTH - oImg.width);
@@ -160,11 +232,8 @@ $(function () {
             var x = randomAddr(oImg);
             // 下降总距离
             var y = -oImg.height;
-
-            var rdItem = [img, x, y, oImg.width, oImg.height, oImg.url];
-            img.onload = function() {
-                _this.rds.push(rdItem);
-            };
+            var rdItem = [$("#img" + nIndex)[0], x, y, oImg.width, oImg.height, oImg.url];
+            _this.rds.push(rdItem);
         },
 
         // 绘制canvas
@@ -174,13 +243,12 @@ $(function () {
             var date = new Date();
             var originDate = date; //初始时间
             var originTime = 10; //初始倒计时
-            // canvas绘制使用requestAnimationFrame
+            // 方案一 requestAnimationFrame
             function downTimer(){
             	if (originTime <= 0) {
             		_this.endGame();
             		return;
             	}
-            	requestAnimationFrame(downTimer);
             	var now = new Date();  
             	var d = now - date;
             	date = now;
@@ -196,21 +264,52 @@ $(function () {
                 _this.rds.forEach(function(item, index){
                     var rd = item;
                     ctx.drawImage(rd[0], rd[1], rd[2], rd[3], rd[4]);
-                    if (rd[2] > _this.HEIGHT) {
+                    if (rd[2] > _this.HEIGHT + 200) {
                         //清除红包
                         _this.destroyRed(index);
                     } else {
                         rd[2] += d * _this.v
                     }
-                })
+                });
+            	requestAnimationFrame(downTimer);
             }
             downTimer();
+            // 方案二 setInterval
+            // var draw_timer = setInterval(function(){
+            // 	if (originTime <= 0) {
+            // 		_this.endGame();
+            // 		clearInterval(draw_timer)
+            // 		return;
+            // 	}
+            // 	var now = new Date();  
+            // 	var d = now - date;
+            // 	date = now;
+            // 	// 计算左上角倒计时
+            // 	var djs = 10 - Math.floor((now - originDate)/1000);
+            // 	if(originTime != djs){
+            // 		$(".remaint-time span").html(djs);
+            // 		originTime = djs;
+            // 	}
+            // 	// 清除整屏
+            //     ctx.clearRect(0, 0, _this.WIDTH, _this.HEIGHT);
+            //     // 重新绘制红包
+            //     _this.rds.forEach(function(item, index){
+            //         var rd = item;
+            //         ctx.drawImage(rd[0], rd[1], rd[2], rd[3], rd[4]);
+            //         if (rd[2] > _this.HEIGHT + 200) {
+            //             //清除红包
+            //             _this.destroyRed(index);
+            //         } else {
+            //             rd[2] += d * _this.v
+            //         }
+            //     });
+            // }, 1)
         },
 
         // 点击获取红包
         getRed: function(){
             var _this = this;
-            $(_this.canvas).on("touchstart", function(e){
+            $(_this.canvas).on(cEvent, function(e){
 	            if (!_this.isStarting) {
 	            	return;
 	            }
@@ -220,8 +319,8 @@ $(function () {
                 $(_this.rds).each(function(index, item){
                     if (cx > item[1] && cx < item[1] + item[3] && cy > item[2] && cy < item[2] + item[4]) {
                         _this.get_rds++;
-                    	_this.getEffect(item);
-                        _this.destroyRed(index);
+                    	_this.getEffect(item, index);
+			            // _this.destroyRed(index);
                         $("audio").each(function(index, el) {
                         	el.pause();
 							el.currentTime = 0;
@@ -240,40 +339,39 @@ $(function () {
         },
 
         // 中奖效果
-        getEffect: function(item){
-        	var _this = this;
-        	var rdDiv = $('<div class="red"></div>');
-        	var rdDivId = 'rd' + _this.get_rds;
-        	rdDiv.attr("id", rdDivId)
-        	rdDiv.css({
+        getEffect: function(item, index){
+			var _this = this;
+        	// 方案一 展示原有img
+        	var img = $(item[0]);
+        	img.show();
+        	img.css({
         		width: item[3] + 'px',
         		height: item[4] + 'px',
-        		background: "url(" + item[5] + ") no-repeat",
-        		backgroundSize: 'cover',
         		position: "absolute",
         		top: item[2] + 'px',
         		left: item[1] + 'px',
-				animation: 'index-btn-scale .2s linear infinite'
+				animation: 'index-btn-scale .5s linear infinite'
         	})
-        	util.appendChildDom(rdDiv, $('body'));
+        	// 方案二 新建
+			// var rdDiv = $('<div class="red"></div>');
+			// var rdDivId = 'rd' + _this.get_rds;
+			// rdDiv.attr("id", rdDivId)
+			// rdDiv.css({
+			// 	width: item[3] + 'px',
+			// 	height: item[4] + 'px',
+			// 	background: "url(" + item[5] + ") no-repeat",
+			// 	backgroundSize: 'cover',
+			// 	position: "absolute",
+			// 	top: item[2] + 'px',
+			// 	left: item[1] + 'px',
+			// 	animation: 'index-btn-scale .5s linear infinite'
+			// })
+			// util.appendChildDom(rdDiv, $('body'));
+			_this.destroyRed(index);
         	setTimeout(function(){
-        		$('body>div#' + rdDivId).remove();
-        	}, 200)
-        },
-
-        // 音效生成
-        setAudio: function(index){
-    		var obj = {};
-        	$(this.sounds).each(function(index, item) {
-        		var audio = $('<audio></audio>');
-        		audio.attr({
-        			id: 'audio' + index,
-        			src: item,
-        			preload: "auto"
-        		})
-        		// audio.src = item;
-        		util.appendChildDom(audio, $('body'));
-        	})
+        		// $('body>div#' + rdDivId).remove();
+        		img.hide();
+        	}, 500)
         },
 
         //结束游戏
@@ -325,7 +423,7 @@ $(function () {
         	console.log("游戏结束,你中了" + sum)
         },
         // 速度/ms+速度差=最高速度
-        v: 0.5,
+        v: 0.2,
         dv: 0
     } 
 

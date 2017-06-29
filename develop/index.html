@@ -12,62 +12,73 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/main.js"></script>
     <style type="text/css">
-        * {
-            margin: 0;
-            padding: 0;
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
+    body {
+        /*background: url("img/redpacket_background@2x.png") no-repeat;
+        -webkit-background-size: cover;
+        background-size: cover;
+        background-position: center;*/
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    .remaint-time {
+        position: absolute;
+        z-index: 1;
+        top: 10px;
+        left: 10px;
+        width: 92px;
+        height: 31px;
+        background: url("img/redpacket_time@2x.png") no-repeat;
+        -webkit-background-size: 92px auto;
+        background-size: 92px auto;
+    }
+    
+    .remaint-time span,
+    .red-sum span {
+        line-height: 31px;
+        float: right;
+        width: 70px;
+        text-align: center;
+    }
+    
+    .red-sum {
+        position: absolute;
+        z-index: 1;
+        top: 10px;
+        right: 10px;
+        width: 92px;
+        height: 31px;
+        background: url("img/redpacket_number@2x.png") no-repeat;
+        -webkit-background-size: 92px auto;
+        background-size: 92px auto;
+    }
+    
+    @-webkit-keyframes index-btn-scale {
+        0%,
+        100% {
+            -webkit-transform: scale(1);
         }
-        body {
-            background: url("img/redpacket_background@2x.png") no-repeat;
-            -webkit-background-size: cover;
-            background-size: cover;
-            background-position: center;
+        50% {
+            -webkit-transform: scale(1.2);
         }
-        .remaint-time {
-            position: absolute;
-            z-index: 1;
-            top: 10px;
-            left: 10px;
-            width: 92px;
-            height: 31px;
-            background: url("img/redpacket_time@2x.png") no-repeat;
-            -webkit-background-size: 92px auto;
-            background-size: 92px auto;
+    }
+    
+    @-moz-keyframes index-btn-scale {
+        0%,
+        100% {
+            -webkit-transform: scale(1);
         }
-        .remaint-time span,.red-sum span  {
-            line-height: 31px;
-            float: right;
-            width: 70px;
-            text-align: center;
+        50% {
+            -webkit-transform: scale(1.2);
         }
-        .red-sum {
-            position: absolute;
-            z-index: 1;
-            top: 10px;
-            right: 10px;
-            width: 92px;
-            height: 31px;
-            background: url("img/redpacket_number@2x.png") no-repeat;
-            -webkit-background-size: 92px auto;
-            background-size: 92px auto;
-        }
-        @-webkit-keyframes index-btn-scale {
-            0%,
-            100%{
-                -webkit-transform: scale(1);
-            }
-            50% {
-                -webkit-transform: scale(1.1);
-            }
-        }
-        @-moz-keyframes index-btn-scale {
-            0%,
-            100%{
-                -webkit-transform: scale(1);
-            }
-            50% {
-                -webkit-transform: scale(1.1);
-            }
-        }
+    }
     </style>
 </head>
 
