@@ -1,0 +1,508 @@
+/*
+ * 全站样式公共资源
+ * 
+ * @since 20150-08-04
+ * @author dongxiaochai@163.com
+ */
+
+@import "variables.less";
+@import "mixin.less";
+/*
+ * iconfont样式声明
+ */
+
+.iconfont {
+    font-size: inherit;
+    -webkit-text-stroke-width: inherit;//描边厚度
+    // -webkit-text-stroke-color:#ff0;
+}
+
+
+/*.iconfont.arrow3-up{
+	content: "\e617";
+}
+.iconfont.arrow3-down{
+	content: "\e618";
+}
+.arrow1-down:after{
+	content: "\e611";
+}*/
+.icon-play:before { content: "\e618"; }
+.icon-stop:before { content: "\e61a"; }
+
+/*
+ * 正文字体。
+ */
+
+html {
+    background: transparent;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+    color: #333;
+    /*font-family: "Microsoft Yahei", 宋体;*/
+    font-family: "Helvetica Neue";
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+ol,
+li,
+fieldset,
+h1,
+h2,
+h3,
+img,
+p,
+input {
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+    outline: medium none;
+    border: 0 none;
+    display: block;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: @bgLightWhite;
+    word-wrap: normal;
+    width: 100%;
+    overflow-x: hidden;
+    font-size: @f4;
+    -webkit-user-select: none;
+    line-height: 1;
+}
+*{
+    line-height: inherit;
+}
+
+a[href] {
+    text-decoration: none;
+    // -ms-touch-action: none;
+    // touch-action: none;
+    color: @fontColorDeepBlack;
+}
+
+li > a{
+    color: inherit;
+    display: block;
+    height: 100%;
+}
+
+a[href] {
+    text-decoration: none;
+    -ms-touch-action: none;
+    touch-action: none;
+}
+
+* {
+    /* 手机端全局背景透明。*/
+    -webkit-tap-highlight-color: rgba(255, 0, 0, 0);
+    -moz-tap-highlight-color: rgba(255, 0, 0, 0);
+    -ms-tap-highlight-color: rgba(255, 0, 0, 0);
+    -o-tap-highlight-color: rgba(255, 0, 0, 0);
+    /* 取消手机端自动调整字体大小。*/
+    -webkit-text-size-adjust: none;
+    -moz-text-size-adjust: none;
+    -ms-text-size-adjust: none;
+    text-size-adjust: none;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+::-webkit-textfield-decoration-container,
+::-webkit-outer-spin-button,
+::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0;
+}
+
+
+/* 取消选中和默认事件响应 */
+
+*:not(input,
+textarea) {
+    -webkit-touch-callout: none;
+    -moz-touch-callout: none;
+    -o-touch-callout: none;
+    touch-callout: none;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    list-style: none;
+}
+
+select {
+    -webkit-appearance: listbox;
+    -moz-appearance: listbox;
+}
+
+input[type=date],
+input[type=month] {
+    -webkit-appearance: listbox;
+    -moz-appearance: listbox;
+}
+
+
+/* 清除浮动 */
+
+.ks-clear:after {
+    content: '\20';
+    display: block;
+    height: 0;
+    clear: both;
+}
+
+.ks-clear {
+    *zoom: 1;
+}
+
+
+/* 设置显示和隐藏，通常用来与 js 配合 */
+
+.ks-hide {
+    display: none !important;
+}
+.ks-block {
+    display: block;
+}
+/* 设置浮动，减少浮动带来的 bug */
+.ks-fleft, .ks-fright {
+    display: inline;
+}
+.ks-fleft {
+    float: left;
+}
+.ks-fright {
+    float: right;
+}
+
+.ks-fixed{
+    position: fixed !important;
+    z-index: 100;
+}
+
+.ks-bgWhite{
+    background-color: #fff !important;
+}
+
+/* 右箭头 */
+.arrow-right:after {
+    content: "\e612";
+    font-size: 14px;
+    color: #bbbbbb;
+}
+
+/* 向右箭头 */
+.arrow-to-right:after {
+    content: "\e60e";
+    font-size: 16px;
+    color: #bbbbbb;
+}
+/* 向下箭头 */
+.arrow-to-down:after {
+    content: "\e60f";
+    font-size: 16px;
+    color: #bbbbbb;
+}
+
+/* 点击样式 */
+
+.stress-item {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.stress-item:active {
+    background: #e6e6e6 !important;
+}
+
+/**
+ * 页面进入进出动画
+ */
+@animateTime: .2s;
+@animateTime2: .4s;
+.an-deley(@time:.1s){
+    -webkit-animation-delay:@time;
+        animation-delay:@time;  
+}
+.an-delay.ng-enter{//对于进入进出的动画延迟
+    -webkit-animation-delay:.4s !important;
+        animation-delay:.4s !important;
+}
+//左边进入
+.an-slideLeft{
+    &.ng-enter {
+        z-index: 100;
+        -webkit-animation: kf-enter @animateTime2 both ease;
+        .an-deley(0.1s);
+    }
+    &.ng-leave {
+        z-index: 100;
+        -webkit-animation: kf-leave @animateTime2 both ease;
+    }
+    /* 从左侧移入 */
+    @-webkit-keyframes kf-enter {
+        0% {
+            -webkit-transform: translate3D(-100%, 0, 0);
+            transform: translate3D(-100%, 0, 0);
+        }
+        5%{
+            -webkit-transform: translate3D(-100%, 0, 0);
+            transform: translate3D(-100%, 0, 0);
+        }
+        100% {
+            -webkit-transform: translate3D(0, 0, 0);
+            transform: translate3D(0, 0, 0);
+        }
+    }
+    /* 向左侧移出 */
+    @-webkit-keyframes kf-leave {
+        0% {
+            -webkit-transform: translate3D(0, 0, 0);
+            transform: translate3D(0, 0, 0);
+        }
+        100% {
+            -webkit-transform: translate3D(-100%, 0, 0);
+            transform: translate3D(-100%, 0, 0);
+        }
+    }
+}
+
+//右边进入
+.an-slideRight{
+    &.ng-enter {
+        z-index: 200;
+        -webkit-animation: slideRight-enter @animateTime2 both ease;
+    }
+    &.ng-leave {
+        z-index: 200;
+        -webkit-animation: slideRight-leave @animateTime2 both ease;
+    }
+    /* 从右侧进入 */
+    @-webkit-keyframes slideRight-enter {
+        0% {
+            -webkit-transform: translate3D(100%, 0, 0);
+            transform: translate3D(100%, 0, 0);
+        }
+        5%{
+            -webkit-transform: translate3D(100%, 0, 0);
+            transform: translate3D(100%, 0, 0);
+        }
+        100% {
+            -webkit-transform: translate3D(0, 0, 0);
+            transform: translate3D(0, 0, 0);
+        }
+    }
+    /* 从右侧移出 */
+    @-webkit-keyframes slideRight-leave {
+        from {
+            -webkit-transform: translate3D(0, 0, 0);
+            transform: translate3D(0, 0, 0);
+        }
+        to {
+            -webkit-transform: translate3D(100%, 0, 0);
+            transform: translate3D(100%, 0, 0);
+        }
+    }
+}
+
+//顶上出来
+.an-slideUp{
+    &.ng-enter {
+        z-index: 200;
+        -webkit-animation: slideUp-enter @animateTime both ease;
+        .an-deley(0.1s);
+    }
+    &.ng-leave {
+        z-index: 200;
+        -webkit-animation: slideUp-leave @animateTime both ease;
+    }
+    /* 从上面下来 */
+    @-webkit-keyframes slideUp-enter {
+        0% {
+            -webkit-transform: translateY(-100%);
+            transform: translateY(-100%);
+        }
+        5%{
+            -webkit-transform: translateY(-100%);
+            transform: translateY(-100%);
+        }
+        100% {
+            -webkit-transform: translateY(0);
+            transform: translateY(0);
+        }
+    }
+    /* 从上面移出 */
+    @-webkit-keyframes slideUp-leave {
+        from {
+            -webkit-transform: translateY(0);
+            transform: translateY(0);
+        }
+        to {
+            -webkit-transform: translateY(-100%);
+            transform: translateY(-100%);
+        }
+    }
+}
+
+//底下出来
+.an-slideDown{
+    &.ng-enter {
+        z-index: 200;
+        -webkit-animation: slideDown-enter @animateTime both ease;
+        .an-deley(0.1s);
+    }
+    &.ng-leave {
+        z-index: 200;
+        -webkit-animation: slideDown-leave @animateTime both ease;
+    }
+    /* 从底下上来 */
+    @-webkit-keyframes slideDown-enter {
+        0% {
+            -webkit-transform: translateY(100%);
+            transform: translateY(100%);
+        }
+        5%{
+            -webkit-transform: translateY(100%);
+            transform: translateY(100%);
+        }
+        100% {
+            -webkit-transform: translateY(0);
+            transform: translateY(0);
+        }
+    }
+    /* 从底下移出 */
+    @-webkit-keyframes slideDown-leave {
+        from {
+            -webkit-transform: translateY(0);
+            transform: translateY(0);
+        }
+        to {
+            -webkit-transform: translateY(100%);
+            transform: translateY(100%);
+        }
+    }
+}
+
+//淡入淡出
+.an-fadeInOut{
+    &.ng-enter {
+        z-index: 200;
+        -webkit-animation: fadeInOut-enter @animateTime both ease;
+        // .an-deley(0.1s);
+    }
+    &.ng-leave {
+        z-index: 200;
+        -webkit-animation: fadeInOut-leave @animateTime both ease;
+    }
+    /* 从底下上来 */
+    @-webkit-keyframes fadeInOut-enter {
+        0% {
+            opacity: 0;
+            filter:alpha(opacity=0);
+        }
+        5%{
+            opacity: 0;
+            filter:alpha(opacity=0);
+        }
+        100% {
+            opacity: 1;
+            filter:alpha(opacity=100);
+        }
+    }
+    /* 从底下移出 */
+    @-webkit-keyframes fadeInOut-leave {
+        from {
+            opacity: 1;
+            filter:alpha(opacity=100);
+        }
+        to {
+            opacity: 0;
+            filter:alpha(opacity=0);
+        }
+    }
+}
+
+/* 转动移出 */
+@-webkit-keyframes rotateOutNewspaper {
+    to {
+        -webkit-transform: translateZ(-3000px) rotateZ(360deg);
+        transform: translateZ(-3000px) rotateZ(360deg);
+        opacity: 0;
+    }
+}
+
+/* 放大加载 */
+@-webkit-keyframes scaleUp {
+    from {
+        opacity: 0.3;
+        -webkit-transform: scale(0.8);
+    }
+}
+
+//箭头旋转180
+:hover .arrow-rotate,
+:hover .arrow-rotate-back{
+    will-change: transform;
+}
+//箭头旋转180
+.arrow-rotate{
+    transform-origin: 50% 50%;
+    animation: kf-arrow-asc 0.2s linear forwards;
+    @-webkit-keyframes kf-arrow-asc {
+        from {
+            -webkit-transform: rotate(0);
+            transform: rotate(0);
+        }
+        to {
+            -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+        }
+    }
+}
+
+//箭头旋转复原
+.arrow-rotate-back{
+    transform-origin: 50% 50%;
+    animation: kf-arrow-desc 0.2s linear forwards !important;
+    @-webkit-keyframes kf-arrow-desc {
+        from {
+            -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+        }
+        to {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+}
+
+/**
+ * 背景淡入
+ */
+.mask-fadeIn{
+    background: #000;
+    animation: kf-mask-fadeIn 0.2s ease forwards;
+    @keyframes kf-mask-fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 0.4;
+        }
+    }
+}

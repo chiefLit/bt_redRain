@@ -1,93 +1,40 @@
 <html>
 
 <head>
-    <title>红包雨demo</title>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="format-detection" content="telephone=no" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta http-equiv="Expires" content="-1">
+    <link href="http://static.cheok.com/ak/common/img/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link rel="apple-touch-icon" href="http://static.cheok.com/ak/common/img/touch-icon/57.png" />
+    <link rel="apple-touch-icon" sizes="57x57" href="http://static.cheok.com/ak/common/img/touch-icon/57.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="http://static.cheok.com/ak/common/img/touch-icon/72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="http://static.cheok.com/ak/common/img/touch-icon/114.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="http://static.cheok.com/ak/common/img/touch-icon/144.png" />
     <meta http-equiv="Cache-Control" content="no-cache">
     <meta http-equiv="Pragma" content="no-cache">
-    <script src="js/jquery.min.js"></script>
-    <script src="js/main.js"></script>
-    <style type="text/css">
-    * {
-        margin: 0;
-        padding: 0;
-    }
-    
-    body {
-        /*background: url("img/redpacket_background@2x.png") no-repeat;
-        -webkit-background-size: cover;
-        background-size: cover;
-        background-position: center;*/
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-    
-    .remaint-time {
-        position: absolute;
-        z-index: 1;
-        top: 10px;
-        left: 10px;
-        width: 92px;
-        height: 31px;
-        background: url("img/redpacket_time@2x.png") no-repeat;
-        -webkit-background-size: 92px auto;
-        background-size: 92px auto;
-    }
-    
-    .remaint-time span,
-    .red-sum span {
-        line-height: 31px;
-        float: right;
-        width: 70px;
-        text-align: center;
-    }
-    
-    .red-sum {
-        position: absolute;
-        z-index: 1;
-        top: 10px;
-        right: 10px;
-        width: 92px;
-        height: 31px;
-        background: url("img/redpacket_number@2x.png") no-repeat;
-        -webkit-background-size: 92px auto;
-        background-size: 92px auto;
-    }
-    
-    @-webkit-keyframes index-btn-scale {
-        0%,
-        100% {
-            -webkit-transform: scale(1);
-        }
-        50% {
-            -webkit-transform: scale(1.2);
-        }
-    }
-    
-    @-moz-keyframes index-btn-scale {
-        0%,
-        100% {
-            -webkit-transform: scale(1);
-        }
-        50% {
-            -webkit-transform: scale(1.2);
-        }
-    }
-    </style>
+    <title>爽爽的红包雨</title>
+    <!-- <link href="./css/global.min.css?bust=20160428121" rel="stylesheet" /> -->
+    <link href="assets/css/game.min.css?bust=201604268121" rel="stylesheet" />
+    <script type="text/javascript" src="assets/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/lib/redrain.js"></script>
 </head>
 
 <body>
-    <div class="remaint-time">
-        <span>10</span>
-    </div>
-    <div class="red-sum">
-        <span>0</span>
+    <div class="pbody" ng-controller="mainController">
+        <div class="rdgame-wrapper">
+            <div class="remaint-time top-box" ng-show="boxShow">
+                <div class="words">
+                    <span>10</span><b>秒</b>
+                </div>
+            </div>
+            <div class="red-sum top-box" ng-show="boxShow">
+                <div class="words">
+                    <span>0</span><b>个</b>
+                </div>
+            </div>
+            <span class="tips" ng-hide="boxShow">本游戏开启音效，效果更佳</span>
+        </div>
     </div>
 </body>
 

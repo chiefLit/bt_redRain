@@ -1,0 +1,131 @@
+/**
+ * 已拆红包样式
+ *
+ * @author lina
+ * @since 2017-07-02  
+ */
+
+@charset "UTF-8";
+@import "variables.less";
+@import "mixin.less";
+@import "base.less";
+
+.apartedRp-wapper{
+	.stage{
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		top: 0; bottom: 0;
+		left: 0; right: 0;
+		padding: 20px;
+
+		background: #340A62 url(../img/share_background.png) no-repeat;
+		background-size: 100% auto;
+		overflow: auto;
+
+		.apartedRp-box{
+			width: 100%;
+			border-radius: @c3;
+			background: rgba(255,255,255,0.1);
+
+			.apartedRp-box-title{
+				width: 100%;
+				height: 50px;
+				background: url(../img/share_top.png) no-repeat;
+				background-size: 100% 50px;
+				padding: 0 15px;
+
+				.hint{
+					font-size: @f6;
+					color: @white;
+					float: right;
+					line-height: 50px;
+				}
+				.title{
+					font-size: @f4;
+					color: #fff40d;
+					line-height: 50px;
+				}
+			}
+			.apartedRp-box-list{
+				width: 100%;
+				padding: 5px 0 20px 15px;
+				overflow: auto;
+
+				.rp-item{
+					width: 67px;
+					height: 80px;
+					margin: 15px 12px 0 0 ;
+					float: left;
+
+					.rp{
+						width: 67px;
+						height: 80px;
+						background-size: 67px 80px;
+						position: relative;
+					}
+					.rp-open{
+						background-image: url(../img/share_redpacket1.png);
+
+						.rp-moneny{
+							width: 100%;
+							font-size: @f3;
+							color: #fff70d;
+							text-align: center;
+							position: absolute;
+							left: 0;
+							bottom: 20px;
+
+							.rp-moneny-num{
+								font-size: 29px;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+@media screen and (min-width: 400px){  //width > 400px
+	.apartedRp-wapper{
+		.stage{
+			.apartedRp-box{
+				//红包列表
+				.apartedRp-box-list{
+					.rp-item{
+						margin: 15px 21px 0 0 ;
+					}
+				}
+			}
+		}
+	}
+}
+@media screen and (max-width: 370px){  //width < 370px
+	.apartedRp-wapper{
+		.stage{
+			.apartedRp-box{
+				//红包列表
+				.apartedRp-box-list{
+					.rp-item{
+						margin: 15px 8px 0 0 ;
+					}
+				}
+			}
+		}
+	}
+}
+@media screen and (max-width: 350px){  //width < 350px
+	.apartedRp-wapper{
+		.stage{
+			.apartedRp-box{
+				//红包列表
+				.apartedRp-box-list{
+					margin-bottom: 95px;
+					.rp-item{
+						margin: 15px 21px 0 0 ;
+					}
+				}
+			}
+		}
+	}
+}

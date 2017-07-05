@@ -1,0 +1,226 @@
+@charset "UTF-8";
+@import "variables.less";
+@import "mixin.less";
+@import "base.less";
+// 游戏页
+.rdgame-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    .top-box {
+        position: absolute;
+        z-index: 1;
+        top: 10px;
+        width: 92px;
+        height: 31px;
+        &.remaint-time {
+            left: 10px;
+            background: url("../img/redpacket_time@2x.png") no-repeat;
+            -webkit-background-size: 92px auto;
+            background-size: 92px auto;
+        }
+        &.red-sum {
+            right: 10px;
+            background: url("../img/redpacket_number@2x.png") no-repeat;
+            -webkit-background-size: 92px auto;
+            background-size: 92px auto;
+        }
+        .words {
+            width: 70px;
+            height: 31px;
+            line-height: 31px;
+            float: right;
+            text-align: center;
+            font-size: 0;
+            span {
+                font-size: @f1;
+                color: #d91935;
+            }
+            b {
+                padding-left: 5px;
+                font-size: @f3;
+                font-weight: normal;
+                color: #32073d;
+            }
+        }
+    }
+    .tips {
+        position: absolute;
+        width: 100%;
+        font-size: @f4;
+        text-align: center;
+        color: @white;
+        bottom: 35px;
+    }
+}
+
+// 各种弹窗页
+.red-pops-wrapper {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5);
+    .content {
+        width: 305px;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        // margin-left: -152.5px;
+        top: 50%;
+        /* 活动规则 */
+        &.rules {
+            // margin-top: -(460+52)/2px;
+            height: 460px;
+            background: url(../img/share_1Background@2x.png) no-repeat;
+            background-position: center;
+            background-size: 305px auto;
+            ul.rules-list {
+                position: absolute;
+                width: 225px;
+                left: 50%;
+                margin-left: -112.5px;
+                top: 160px;
+                li {
+                    font-size: @f5;
+                    color: @white;
+                    line-height: 20px;
+                    margin-bottom: 9px;
+                }
+            }
+            .btn {
+                position: absolute;
+                width: 210px;
+                height: 45px;
+                bottom: 25px;
+                left: 50%;
+                margin-left: -105px;
+                background: url('../img/share_1Button@2x.png') no-repeat;
+                background-position: center;
+                background-size: 210px auto;
+            }
+        }
+        /* 游戏结束 */
+        &.gameover {
+            position: absolute;
+            width: 300px;
+            left: 50%;
+            // margin-left: -150px;
+            // margin-top: -(445+52)/2px;
+            height: 445px;
+            background: url(../img/home1-share1.png) no-repeat;
+            background-size: 300px auto;
+            background-position: center;
+            &.none {
+                margin-top: -(336+52)/2px;
+                height: 336px;
+                background: url(../img/home2-rob2.png) no-repeat;
+                background-size: 300px auto;
+                background-position: center;
+            }
+            .module-box {
+                position: absolute;
+                width: 213px;
+                left: 50%;
+                margin-left: -106.5px;
+                top: 140px;
+                .title {
+                    display: block;
+                    width: 100%;
+                    font-size: @f3;
+                    line-height: 1;
+                    color: #fff70d;
+                    text-align: center;
+                }
+                p {
+                    margin-top: 10px;
+                    font-size: @f5;
+                    color: @white;
+                    line-height: 24px;
+                    b {
+                        font-weight: normal;
+                        color: #fff70d;
+                    }
+                    span {
+                        font-size: @f6;
+                    }
+                }
+                .scroll {
+                    margin-top: 10px;
+                    border-radius: 10px;
+                    background: rgba(213, 39, 66, 0.5);
+                    height: 100px;
+                    overflow: scroll;
+                    ul {
+                        padding: 5px 0;
+                        li {
+                            position: relative;
+                            height: 37px;
+                            .half-border(bottom,
+                            #b41029);
+                            i {
+                                width: 13px;
+                                height: 16px;
+                                position: absolute;
+                                top: 10px;
+                                left: 15px;
+                                background: url(../img/hongbao.png) no-repeat;
+                                background-size: 13px auto;
+                                background-position: center;
+                            }
+                            span {
+                                line-height: 37px;
+                                font-size: @f5;
+                                color: @white;
+                                &.words {
+                                    margin-left: 33px;
+                                }
+                                &.count {
+                                    float: right;
+                                    margin-right: 15px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .btn {
+                position: absolute;
+                width: 210px;
+                height: 45px;
+                bottom: 58px;
+                left: 50%;
+                margin-left: -105px;
+                background: url('../img/home-share2_03.png') no-repeat;
+                background-position: center;
+                background-size: 210px auto;
+            }
+            .tips {
+                font-size: 11px;
+                line-height: 16px;
+                color: #fff70d;
+                position: absolute;
+                bottom: 21px;
+                left: 50%;
+                margin-left: -98px;
+                width: 196px;
+                height: 32px;
+            }
+        }
+    }
+    // 公共关闭按钮
+    .close {
+        position: absolute;
+        width: 27px;
+        height: 27px;
+        background: url('../img/share_button@2x.png') no-repeat;
+        background-position: center;
+        background-size: 27px auto;
+        left: 50%;
+        margin-left: -13.5px;
+        bottom: -52px;
+    }
+}
