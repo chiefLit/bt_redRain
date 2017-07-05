@@ -515,7 +515,7 @@ $(function () {
         var _this = this;
         _this.isStartGame = false;
         // 清除整屏
-        // _this.ctx.clearRect(0, 0, _this.WIDTH, _this.HEIGHT);0
+        // _this.ctx.clearRect(0, 0, _this.WIDTH, _this.HEIGHT);
         _this.callback_gameover(_this.nGetRedTotal)
     };
 
