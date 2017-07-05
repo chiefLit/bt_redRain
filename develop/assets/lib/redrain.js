@@ -113,14 +113,15 @@ $(function () {
         // 创建画布
         this.canvas = util.createCanvas(this.WIDTH, this.HEIGHT, "canvas", $('.rdgame-wrapper'))[0];
         this.ctx = this.canvas.getContext('2d');
-                // Retina屏抗锯齿
-                // if (window.devicePixelRatio) {
-                //     this.canvas.style.width = this.WIDTH + "px";
-                //     this.canvas.style.height = this.HEIGHT + "px";
-                //     this.canvas.height = this.HEIGHT * window.devicePixelRatio;
-                //     this.canvas.width = this.WIDTH * window.devicePixelRatio;
-                //     this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-                // }
+        this.nDevicePixelRatio = 2 || window.devicePixelRatio;
+        // Retina屏抗锯齿
+        if (this.nDevicePixelRatio) {
+            this.canvas.style.width = this.WIDTH + "px";
+            this.canvas.style.height = this.HEIGHT + "px";
+            this.canvas.height = this.HEIGHT * this.nDevicePixelRatio;
+            this.canvas.width = this.WIDTH * this.nDevicePixelRatio;
+            this.ctx.scale(this.nDevicePixelRatio, this.nDevicePixelRatio);
+        }
         // 透明背景
         this.ctx.fillStyle = 'rgba(255, 255, 255, 0)';
         this.ctx.rotate(this.nRotate * Math.PI / 180);
@@ -159,8 +160,8 @@ $(function () {
     Fn.prototype.init = function () {
         var _this = this;
         util.setBackground(_this.backgroundUrl, $('.rdgame-wrapper'));
-        // _this.countdown();
-        _this.gameStart();
+        _this.countdown();
+        // _this.gameStart();
         _this.setAudios();
         _this.setRedImages();
     };
@@ -180,12 +181,14 @@ $(function () {
             util.appendChildDom(audio, $('body'));
         })
         var audios = $("audio");
-        // audios.each(function(index, el){
-        //     try{
-        //         el.pause();
-        //     } catch(e) {
-        //     }
-        // })
+        audios.each(function(index, el){
+            try{
+                el.paly();
+                el.pause();
+            } catch(e) {
+                console.log()
+            }
+        })
     };
 
     // 红包图片生成
@@ -194,26 +197,26 @@ $(function () {
         $(_this.redImages).each(function (index, item) {
             var img = new Image();
             $(img).attr({
-                id: 'img' + index,
+                // id: 'img' + index,
                 src: item.url
             });
             $(img).hide();
             util.appendChildDom(img, $('body'));
             img.onload = function () {
-                // var canvas = util.createCanvas(item.width, item.height, "canvas", $('body'))[0];
-                // var ctx = canvas.getContext('2d');
-                // // Retina屏抗锯齿
-                // if (window.devicePixelRatio) {
-                //     canvas.style.width = item.width + "px";
-                //     canvas.style.height = item.height + "px";
-                //     canvas.height = item.height * window.devicePixelRatio;
-                //     canvas.width = item.width * window.devicePixelRatio;
-                //     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-                // }
-                // ctx.drawImage(img, 0, 0, item.width, item.height);
-                // $(canvas).attr({
-                //     "id": "img" + index,
-                // });
+                var canvas = util.createCanvas(item.width, item.height, "canvas", $('body'))[0];
+                var ctx = canvas.getContext('2d');
+                // Retina屏抗锯齿
+                if (_this.nDevicePixelRatio) {
+                    canvas.style.width = item.width + "px";
+                    canvas.style.height = item.height + "px";
+                    canvas.height = item.height * _this.nDevicePixelRatio;
+                    canvas.width = item.width * _this.nDevicePixelRatio;
+                    ctx.scale(_this.nDevicePixelRatio, _this.nDevicePixelRatio);
+                }
+                ctx.drawImage(img, 0, 0, item.width, item.height);
+                $(canvas).attr({
+                    "id": "img" + index,
+                });
             };
         })
     };
@@ -297,6 +300,7 @@ $(function () {
             // 跟据时间变化速度
             // _this.dropSpeed = (50 - Math.abs(50 - sum)) * _this.dv / 50 + startV;
             if (nNandom < _this.redOdds) {
+                console.log(sum)
                 _this.createRed();
             }
             if (sum > 10000 / _this.timeInterval) {
@@ -331,7 +335,7 @@ $(function () {
 
         // 给红包一个单独的速度
         // var speed = _this.dropSpeed;
-        var speed = util.random(-0.2, 0.2, true) + _this.dropSpeed;
+        var speed = util.random(-0.1, 0.1, true) + _this.dropSpeed;
         // 红包单位
         var redItem = [$("#img" + nIndex)[0], x, y, oImg.width, oImg.height, speed, false];
         _this.redList.push(redItem);
@@ -465,6 +469,7 @@ $(function () {
 
     // 点击屏幕获取红包
     Fn.prototype.getRed = function () {
+
         var _this = this;
         $(_this.canvas).on("touchstart", function (e) {
             e.preventDefault();
@@ -472,9 +477,8 @@ $(function () {
                 return;
             }
             var touch = e.originalEvent.targetTouches[0];
-            var cx = touch.clientX;
-            var cy = touch.clientY;
-
+            var cx = touch.clientX * 2;
+            var cy = touch.clientY * 2;
             var a1 = _this.ctx.getImageData(cx, cy, 1, 1);
             if (a1.data.toString() !== [0, 0, 0, 0].toString()) {
                 $(_this.redList).each(function (index, item) {
@@ -511,7 +515,7 @@ $(function () {
         var _this = this;
         _this.isStartGame = false;
         // 清除整屏
-        _this.ctx.clearRect(0, 0, _this.WIDTH, _this.HEIGHT);
+        // _this.ctx.clearRect(0, 0, _this.WIDTH, _this.HEIGHT);0
         _this.callback_gameover(_this.nGetRedTotal)
     };
 
