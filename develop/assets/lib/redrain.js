@@ -300,7 +300,7 @@ $(function () {
             // 跟据时间变化速度
             // _this.dropSpeed = (50 - Math.abs(50 - sum)) * _this.dv / 50 + startV;
             if (nNandom < _this.redOdds) {
-                console.log(sum)
+                // console.log(sum)
                 _this.createRed();
             }
             if (sum > 10000 / _this.timeInterval) {
@@ -345,74 +345,129 @@ $(function () {
     Fn.prototype.drawCanvas = function () {
         var _this = this;
         var ctx = this.ctx;
-        // 方案一 requestAnimationFrame
-        function getReqCallback() {
-            var count = 0;
-            var start = null;
-            var lastTimestamp = null; // 记录上一次时间
-            var delta = 0; // 每一帧时间间隔
-            var nCountDown = 10; //倒计时
-            return function req(timestamp) {
-                if (start === null) {
-                    start = timestamp;
-                    lastTimestamp = timestamp;
-                }
-                count++;
-                delta = timestamp - lastTimestamp;
-
-                var djs = 10 - Math.floor((timestamp - start) / 1000);
-
-                if (nCountDown != djs) {
-                    nCountDown = djs;
-                    $(".remaint-time span").html(nCountDown);
-                }
-
-                // 清除整屏
-                _this.ctx.clearRect(0, 0, _this.WIDTH, _this.HEIGHT);
-                // 重新绘制红包
-                // $(_this.redList).each(function (index, item) {
-                _this.redList.forEach(function (item, index) {
-                    if (item[6]) {
-                        // 红包已经被点击的效果
-                        item[7] = item[7] || timestamp;
-                        //系数(0-0.2)
-                        var nZoom = (1 - Math.abs(timestamp - item[7] - 250) / 250) * 0.2;
-                        ctx.drawImage(
-                            item[0],
-                            item[1] - nZoom * item[3] / 5,
-                            item[2] - nZoom * item[4] / 5,
-                            item[3] * (1 + nZoom),
-                            item[4] * (1 + nZoom)
-                        );
-                        if (timestamp - item[7] > 500) {
-                            _this.destroyRed(index);
-                        }
-                    } else {
-                        // 红包正在下落的效
-                        ctx.drawImage(item[0], item[1], item[2], item[3], item[4]);
-                        // ctx.beginPath(); 
-                        // ctx.strokeStyle="#f00";/*设置边框*/ 
-                        // ctx.fillStyle="#F00";/*设置填充颜色*/ 
-                        // ctx.fillRect(item[1], item[2] << 0, item[3], item[4]); 
-                        if (item[2] > _this.HEIGHT + 200) {
-                            //清除红包
-                            _this.destroyRed(index);
-                        } else {
-                            item[2] += (delta * item[5]) << 0
-                        }
-                    }
-                });
-                lastTimestamp = timestamp;
-                if (timestamp - start < 10000) {
-                    requestAnimationFrame(req);
-                } else {
-                    // _this.ctx.clearRect(0, 0, _this.WIDTH, _this.HEIGHT);
-                    _this.endGame();
-                }
+        // 方案三
+        var diffframetime = 0;
+        var lastframetime;
+        var nCountDown = 10; //倒计时
+        function gameLoop(){
+            requestAnimationFrame(gameLoop);
+            var now = new Date();
+            diffframetime = now - lastframetime;
+            lastframetime = now;
+            if (diffframetime > 10000) {
+                _this.endGame();
+                return;
             }
+            // 填写倒计时
+            var djs = 10 - Math.floor(diffframetime / 1000);
+            if (nCountDown != djs) {
+                nCountDown = djs;
+                $(".remaint-time span").html(nCountDown);
+            }
+            // 清除整屏
+            _this.ctx.clearRect(0, 0, _this.WIDTH, _this.HEIGHT);
+            // 重新绘制红包
+            _this.redList.forEach(function (item, index) {
+                if (item[6]) {
+                    // 红包已经被点击的效果
+                    item[7] = item[7] || now;
+                    //系数(0-0.2)
+                    var nZoom = (1 - Math.abs(now - item[7] - 250) / 250) * 0.2;
+                    ctx.drawImage(
+                        item[0],
+                        item[1] - nZoom * item[3] / 5,
+                        item[2] - nZoom * item[4] / 5,
+                        item[3] * (1 + nZoom),
+                        item[4] * (1 + nZoom)
+                    );
+                    if (now - item[7] > 500) {
+                        _this.destroyRed(index);
+                    }
+                } else {
+                    // 红包正在下落的效
+                    ctx.drawImage(item[0], item[1], item[2], item[3], item[4]);
+                    // ctx.beginPath(); 
+                    // ctx.strokeStyle="#f00";/*设置边框*/ 
+                    // ctx.fillStyle="#F00";/*设置填充颜色*/ 
+                    // ctx.fillRect(item[1], item[2] << 0, item[3], item[4]); 
+                    if (item[2] > _this.HEIGHT + 200) {
+                        //清除红包
+                        _this.destroyRed(index);
+                    } else {
+                        item[2] += (diffframetime * item[5]) << 0
+                    }
+                }
+            });
         }
-        requestAnimationFrame(getReqCallback());
-        // 方案2 setInterval
+        gameLoop();
+        // 方案一 requestAnimationFrame
+        // function getReqCallback() {
+        //     var count = 0;
+        //     var start = null;
+        //     var lastTimestamp = null; // 记录上一次时间
+        //     var delta = 0; // 每一帧时间间隔
+        //     var nCountDown = 10; //倒计时
+        //     return function req(timestamp) {
+        //         if (start === null) {
+        //             start = timestamp;
+        //             lastTimestamp = timestamp;
+        //         }
+        //         count++;
+        //         delta = timestamp - lastTimestamp;
+
+        //         var djs = 10 - Math.floor((timestamp - start) / 1000);
+
+        //         if (nCountDown != djs) {
+        //             nCountDown = djs;
+        //             $(".remaint-time span").html(nCountDown);
+        //         }
+
+        //         // 清除整屏
+        //         _this.ctx.clearRect(0, 0, _this.WIDTH, _this.HEIGHT);
+        //         // 重新绘制红包
+        //         // $(_this.redList).each(function (index, item) {
+        //         _this.redList.forEach(function (item, index) {
+        //             if (item[6]) {
+        //                 // 红包已经被点击的效果
+        //                 item[7] = item[7] || timestamp;
+        //                 //系数(0-0.2)
+        //                 var nZoom = (1 - Math.abs(timestamp - item[7] - 250) / 250) * 0.2;
+        //                 ctx.drawImage(
+        //                     item[0],
+        //                     item[1] - nZoom * item[3] / 5,
+        //                     item[2] - nZoom * item[4] / 5,
+        //                     item[3] * (1 + nZoom),
+        //                     item[4] * (1 + nZoom)
+        //                 );
+        //                 if (timestamp - item[7] > 500) {
+        //                     _this.destroyRed(index);
+        //                 }
+        //             } else {
+        //                 // 红包正在下落的效
+        //                 ctx.drawImage(item[0], item[1], item[2], item[3], item[4]);
+        //                 // ctx.beginPath(); 
+        //                 // ctx.strokeStyle="#f00";/*设置边框*/ 
+        //                 // ctx.fillStyle="#F00";/*设置填充颜色*/ 
+        //                 // ctx.fillRect(item[1], item[2] << 0, item[3], item[4]); 
+        //                 if (item[2] > _this.HEIGHT + 200) {
+        //                     //清除红包
+        //                     _this.destroyRed(index);
+        //                 } else {
+        //                     item[2] += (delta * item[5]) << 0
+        //                 }
+        //             }
+        //         });
+        //         lastTimestamp = timestamp;
+        //         if (timestamp - start < 10000) {
+        //             requestAnimationFrame(req);
+        //         } else {
+        //             // _this.ctx.clearRect(0, 0, _this.WIDTH, _this.HEIGHT);
+        //             _this.endGame();
+        //         }
+        //     }
+        // }
+        // requestAnimationFrame(getReqCallback());
+        // 方案二 setInterval
         // var times = 0;
         // var d = 6; // now - date;
         // var timer = setInterval(function(){
@@ -453,7 +508,7 @@ $(function () {
         //             ctx.beginPath(); 
         //             ctx.strokeStyle="#f00";/*设置边框*/ 
         //             ctx.fillStyle="#F00";/*设置填充颜色*/ 
-        //             ctx.fillRect(item[1], item[2] << 0, item[3], item[4]);/*绘制一个矩形，前两个参数决定开始位置，后两个分别是矩形的宽和高*/ 
+        //             ctx.fillRect(item[1], item[2] << 0, item[3], item[4]);
         //             if (item[2] > _this.HEIGHT + 200) {
         //                 //清除红包
         //                 _this.destroyRed(index);

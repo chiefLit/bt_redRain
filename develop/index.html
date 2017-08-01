@@ -5,19 +5,34 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta http-equiv="Expires" content="-1">
-    <link href="http://static.cheok.com/ak/common/img/favicon.ico" rel="shortcut icon" type="image/x-icon">
-    <link rel="apple-touch-icon" href="http://static.cheok.com/ak/common/img/touch-icon/57.png" />
-    <link rel="apple-touch-icon" sizes="57x57" href="http://static.cheok.com/ak/common/img/touch-icon/57.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="http://static.cheok.com/ak/common/img/touch-icon/72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="http://static.cheok.com/ak/common/img/touch-icon/114.png" />
-    <link rel="apple-touch-icon" sizes="144x144" href="http://static.cheok.com/ak/common/img/touch-icon/144.png" />
     <meta http-equiv="Cache-Control" content="no-cache">
     <meta http-equiv="Pragma" content="no-cache">
     <title>爽爽的红包雨</title>
     <!-- <link href="./css/global.min.css?bust=20160428121" rel="stylesheet" /> -->
     <link href="assets/css/game.min.css?bust=201604268121" rel="stylesheet" />
-    <script type="text/javascript" src="assets/lib/jquery.min.js"></script>
-    <script type="text/javascript" src="assets/lib/redrain.js"></script>
+    <style type="text/css">
+    @keyframes an-move {
+        from {
+            transform: translate3D(0px, -110px, 0px) rotate(35deg);
+            -webkit-transform: translate3D(0px, -110px, 0px) rotate(35deg); //opacity: 1;
+        }
+        to {
+            transform: translate3D(-500px, 900px, 0px) rotate(35deg);
+            -webkit-transform: translate3D(-500px, 900px, 0px) rotate(35deg); //opacity: 0;
+        }
+    }
+
+    @-webkit-keyframes an-move {
+        from {
+            transform: translate3D(0px, -110px, 0px) rotate(35deg);
+            -webkit-transform: translate3D(0px, -110px, 0px) rotate(35deg); //opacity: 1;
+        }
+        to {
+            transform: translate3D(-500px, 900px, 0px) rotate(35deg);
+            -webkit-transform: translate3D(-500px, 900px, 0px) rotate(35deg); //opacity: 0;
+        }
+    }
+    </style>
 </head>
 
 <body>
@@ -36,6 +51,46 @@
             <span class="tips" ng-hide="boxShow">本游戏开启音效，效果更佳</span>
         </div>
     </div>
+    <script type="text/javascript" src="assets/lib/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="assets/lib/redrain-canvas.js"></script> -->
+    <script type="text/javascript" src="assets/lib/redrain-transform.js"></script>
+    <script type="text/javascript">
+    var options = {
+        WIDTH: $(window).width() * 1,
+        HEIGHT: $(window).height() * 1,
+        //背景图片 红包图片
+        backgroundUrl: "./assets/img/redpacket_background@2x.png",
+        imgList: [
+            "./assets/img/redpacket_person1@2x.png",
+            "./assets/img/redpacket_person2@2x.png",
+            "./assets/img/redpacket_person3@2x.png",
+            "./assets/img/redpacket_person4@2x.png"
+            // "./assets/img/open-redpacket.png"
+        ],
+        // 点击音效
+        soundList: ['./assets/mp3/hb.m4a', './assets/mp3/jy.m4a'],
+        // 单个红包出现几率
+        redOdds: 0.4,
+        // 平均速度+速度差=最高速度
+        dropSpeed: 0.6,
+        // 多少时间生成一个
+        timeInterval: 100,
+        // 最快最慢
+        slowSpeed: 2800,
+        fastSpeed: 1800
+    };
+
+    // 读秒结束&游戏开始
+    function fnCountdown() {
+        console.log("game start");
+    }
+
+    // 游戏结束
+    function fnGameover(num) {
+        console.log("game over");
+    }
+    var rd = new Redrain(options, fnCountdown, fnGameover);
+    </script>
 </body>
 
 </html>
