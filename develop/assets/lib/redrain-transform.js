@@ -263,30 +263,30 @@ Fn.prototype.countdown = function(callback) {
     div.html(span);
     util.appendChildDom(div, $('body'));
     // util.appendChildDom(span, div);
-    var countInterval = setInterval(function() {
-        if (time_meter < 1) {
-            clearInterval(countInterval);
-            $('body>div.count').remove();
-            _this.callback_countdown();
-            callback && callback();
-            return
-        }
-        spanStyle = $.extend(true, spanStyle, {
-            background: "url(" + numImageList[time_meter - 1] + ") no-repeat",
-        });
-        if (time_meter == 1) {
-            spanStyle = $.extend(true, spanStyle, {
-                width: "100px",
-                height: "90px",
-                top: "208px",
-                left: "115px",
-            });
-        }
-        span.css(spanStyle);
+    // var countInterval = setInterval(function() {
+    //     if (time_meter < 1) {
+    //         clearInterval(countInterval);
+    //         $('body>div.count').remove();
+    //         _this.callback_countdown();
+    //         callback && callback();
+    //         return
+    //     }
+    //     spanStyle = $.extend(true, spanStyle, {
+    //         background: "url(" + numImageList[time_meter - 1] + ") no-repeat",
+    //     });
+    //     if (time_meter == 1) {
+    //         spanStyle = $.extend(true, spanStyle, {
+    //             width: "100px",
+    //             height: "90px",
+    //             top: "208px",
+    //             left: "115px",
+    //         });
+    //     }
+    //     span.css(spanStyle);
 
 
-        time_meter--;
-    }, 1000)
+    //     time_meter--;
+    // }, 1000)
 };
 
 // 创建红包

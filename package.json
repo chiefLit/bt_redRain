@@ -6,5 +6,8 @@
   "scripts": {
     "sync": "browser-sync start --server \"develop\" --baseDir --directory true --files \"develop/**/*\" --open \"external\" --port 8800"
   },
-  "author": "liting"
+  "author": "liting",
+  "devDependencies": {
+    "browser-sync": "^2.26.7"
+  }
 }
